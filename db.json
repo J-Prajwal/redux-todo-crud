@@ -1,0 +1,14 @@
+{
+  "todos": [
+    {
+      "id": "38b71422-a042-4161-91f4-223e30004de4",
+      "value": "Dummy 1",
+      "isCompleted": false
+    },
+    {
+      "id": "7c3dbb38-f020-41e4-8d91-ddf95b15f25a",
+      "value": "dummy 2",
+      "isCompleted": false
+    }
+  ]
+}
