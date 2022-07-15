@@ -1,27 +1,15 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Navbar from "./Components/Navbar";
-import { Routes, Route } from "react-router-dom";
-import { RequiredAuth } from "./hoc/RequiredAuth";
-import Home from "./Components/Home";
+import Hompage from "./Pages/Hompage";
 import Login from "./Pages/Login";
-import TodoList from "./Components/TodoList";
+import MainRoutes from "./Pages/MainRoutes";
+import Signup from "./Pages/Signup";
+// https://masai-api-mocker.herokuapp.com/ userLogin api mocker
 
 function App() {
   return (
     <div className="App">
-      <Navbar></Navbar>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <RequiredAuth>
-              <Home />
-            </RequiredAuth>
-          }
-        ></Route>
-        <Route path="/todo" element={<TodoList />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-      </Routes>
+      <MainRoutes />
     </div>
   );
 }
