@@ -12,9 +12,36 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {Link as RouterLink} from 'react-router-dom';
+import { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../Redux/AuthReducer/actions";
+import { LOGIN_SUCESS } from "../Redux/AuthReducer/actionTypes";
 
 export default function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { isLoading } = useSelector((state) => state.authReducer);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const loginHandler = () => {
+    if (username && password) {
+      const params = {
+        username,
+        password,
+      };
+
+      dispatch(login(params)).then((res) => {
+        if (res == LOGIN_SUCESS) {
+          navigate("/", { replace: true });
+        } else {
+        }
+      });
+    }
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -37,12 +64,22 @@ export default function Login() {
         >
           <Stack spacing={4}>
             <FormControl id="email">
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <FormLabel>Username</FormLabel>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter Username"
+              />
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={"Enter Password"}
+              />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -59,13 +96,18 @@ export default function Login() {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={loginHandler}
+                isLoading={isLoading}
               >
                 Sign in
               </Button>
             </Stack>
             <Stack pt={6}>
-              <Text align={'center'}>
-                Already a user? <RouterLink to="/Signup" color={'blue.400'}>Signup</RouterLink>
+              <Text align={"center"}>
+                Already a user?{" "}
+                <RouterLink to="/Signup" color={"blue.400"}>
+                  Signup
+                </RouterLink>
               </Text>
             </Stack>
           </Stack>

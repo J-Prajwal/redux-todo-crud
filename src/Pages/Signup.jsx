@@ -1,3 +1,4 @@
+import React, { useReducer } from "react";
 import {
   Flex,
   Box,
@@ -12,15 +13,20 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
-  Textarea
+  Editable,
+  EditableTextarea,
+  EditablePreview,
 } from "@chakra-ui/react";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import {Link as RouterLink} from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { register } from "../Redux/AuthReducer/actions";
+import { useDispatch } from "react-redux";
+import { REGISTER_SUCCESS } from "../Redux/AuthReducer/actionTypes";
 
 function reducer(state, action) {
-  switch (action.types) {
+  switch (action.type) {
     case "name":
       return {
         ...state,
@@ -34,7 +40,12 @@ function reducer(state, action) {
     case "password":
       return {
         ...state,
-        passowrd: action.payload,
+        password: action.payload,
+      };
+    case "username":
+      return {
+        ...state,
+        username: action.payload,
       };
     case "mobile":
       return {
@@ -46,25 +57,34 @@ function reducer(state, action) {
         ...state,
         description: action.payload,
       };
+
     default:
       return state;
   }
 }
-
 const initialState = {
-  "name": "",
-  "email": "",
-  "password": "",
-  "mobile": 0,
-  "description": ""
-}
+  name: "",
+  email: "",
+  password: "",
+  username: "",
+  mobile: 0,
+  description: "",
+};
 
-export default function Signup() {
+const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, setter] = useReducer(reducer, initialState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  console.log("state:", state);
+
   const signupHandler = () => {
-    dispatch()
-  }
+    dispatch(register(state)).then((res) => {
+      if (res === REGISTER_SUCCESS) {
+        navigate("/login", { replace: true });
+      }
+    });
+  };
 
   return (
     <Flex
@@ -91,26 +111,50 @@ export default function Signup() {
           <Stack spacing={4}>
             <HStack>
               <Box>
-                <FormControl id="firstName" isRequired>
-                  <FormLabel>First Name</FormLabel>
-                  <Input type="text" />
+                <FormControl id="Name" isRequired>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                    type="text"
+                    value={state.name}
+                    onChange={(e) =>
+                      setter({ type: "name", payload: e.target.value })
+                    }
+                  />
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="lastName">
-                  <FormLabel>Last Name</FormLabel>
-                  <Input type="text" />
+                <FormControl id="username" isRequired>
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    type="text"
+                    value={state.username}
+                    onChange={(e) =>
+                      setter({ type: "username", payload: e.target.value })
+                    }
+                  />
                 </FormControl>
               </Box>
             </HStack>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input
+                type="email"
+                value={state.email}
+                onChange={(e) =>
+                  setter({ type: "email", payload: e.target.value })
+                }
+              />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={state.password}
+                  onChange={(e) =>
+                    setter({ type: "password", payload: e.target.value })
+                  }
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
@@ -123,14 +167,29 @@ export default function Signup() {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <FormControl id="email" isRequired>
-              <FormLabel>Mobile</FormLabel>
-              <Input type="email" />
-            </FormControl>
-            <FormControl id="description">
-              <FormLabel>Description</FormLabel>
-              <Textarea  />
-            </FormControl>
+            <Box>
+              <FormControl id="mobile" isRequired>
+                <FormLabel>Mobile</FormLabel>
+                <Input
+                  type="number"
+                  value={state.mobile}
+                  onChange={(e) =>
+                    setter({ type: "mobile", payload: e.target.value })
+                  }
+                />
+              </FormControl>
+            </Box>
+            <Box>
+              <Editable defaultValue="Description">
+                <EditablePreview />
+                <EditableTextarea
+                  value={state.description}
+                  onChange={(e) =>
+                    setter({ type: "description", payload: e.target.value })
+                  }
+                />
+              </Editable>
+            </Box>
             <Stack spacing={10} pt={2}>
               <Button
                 loadingText="Submitting"
@@ -140,13 +199,17 @@ export default function Signup() {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={signupHandler}
               >
                 Sign up
               </Button>
             </Stack>
             <Stack pt={6}>
               <Text align={"center"}>
-                Already a user? <RouterLink to={"/Login"} color={"blue.400"}>Login</RouterLink>
+                Already a user?{" "}
+                <RouterLink to="/login" color={"blue.400"}>
+                  Login
+                </RouterLink>
               </Text>
             </Stack>
           </Stack>
@@ -154,4 +217,6 @@ export default function Signup() {
       </Stack>
     </Flex>
   );
-}
+};
+
+export default SignUp;

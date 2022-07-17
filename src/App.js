@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import Hompage from "./Pages/Hompage";
 import Login from "./Pages/Login";
 import MainRoutes from "./Pages/MainRoutes";
@@ -8,7 +7,7 @@ import Signup from "./Pages/Signup";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <MainRoutes />
     </div>
   );
